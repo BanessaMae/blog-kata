@@ -1,0 +1,61 @@
+/* eslint-disable no-unused-expressions */
+import React, { useState, useEffect } from 'react';
+import { Pagination, Spin } from 'antd';
+
+
+import { getArticleList } from '../../API/fetchAPI';
+import Card from '../Card/Card'
+import styles from './CardList.module.scss'
+
+function CardList() {
+  const [articles, setArticles] = useState([]);
+  const [error, setError] = useState(false);
+  const [articlesCount, setArticlesCount] = useState();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [load, setLoaded] = useState(true);
+  const token = localStorage.getItem('token');
+
+  useEffect(() => {
+    getArticleList(currentPage)
+      .then((body) => {
+        setArticles(body.articles), setArticlesCount(body.articlesCount);
+        setLoaded(false);
+      })
+      .catch(() => setError(true));
+  }, [token]);
+
+  const onChangePage = (page) => {
+    getArticleList(page)
+      .then((body) => {
+        setArticles(body.articles), setArticlesCount(body.articlesCount);
+        setLoaded(false);
+      })
+      .catch(() => setError(true));
+    setCurrentPage(page);
+  };
+
+  const loaded = load ? <Spin size="large" /> : null;
+  const showError = error ? 'Error' : null;
+
+  return (
+    <div className={styles.article__list}>
+      {loaded}
+      {showError}
+      {articles.map((item) => {
+        return <Card key={item.slug} data={item} />;
+      })}
+      {articles.length !== 0 ? (
+        <Pagination
+          defaultCurrent={1}
+          total={articlesCount}
+          showSizeChanger={false}
+          className={styles.pagination}
+          onChange={onChangePage}
+          current={currentPage}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+export default (CardList);
