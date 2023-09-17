@@ -8,8 +8,20 @@ import SignIn from '../forms/SignIn';
 import SignUp from '../forms/SignUp';
 import Profile from '../forms/Profile';
 import CreatePost from '../forms/CreatePost';
-import CreateCard from '../CreateCard/CreateCard';
-import CardList from '../CardList/CardList';
+import CreateArticle from '../CreateArticle/CreateArticle';
+import ArticleList from '../ArticleList/ArticleList';
+
+import {slash} from '../Route/Route';
+import {article} from '../Route/Route';
+import {articleSlug} from '../Route/Route';
+import {signUp} from '../Route/Route';
+import {newArticle} from '../Route/Route';
+import {articleSlugEdit} from '../Route/Route';
+import {profile} from '../Route/Route';
+import {signIn} from '../Route/Route';
+
+
+import {getArticleList} from '../../API/fetchAPI'
 
 import styles from './App.module.scss';
 
@@ -18,20 +30,23 @@ function App() {
 
   useEffect(() => {
     dispatch(checkAuth());
+    getArticleList()
   }, []);
+
+
 
   return (
     <div className={styles.wrapper}>
       <Router>
       <Header />
-        <Route exact path="/" component={CardList}/>
-        <Route exact path="/articles" component={CardList} />
-        <Route exact path="/articles/:slug" component={CreatePost} />
-        <Route path="/sign-up" component={SignUp} />
-        <Route path="/sign-in" component={SignIn} />
-        <Route path="/profile" component={Profile} />
-        <Route path="/new-article" component={CreateCard} />
-        <Route path="/articles/:slug/edit" component={CreateCard} />
+        <Route exact path={slash} component={ArticleList}/>
+        <Route exact path={article} component={ArticleList} />
+        <Route exact path={articleSlug} component={CreatePost} />
+        <Route path={signUp} component={SignUp} />
+        <Route path={signIn} component={SignIn} />
+        <Route path={profile} component={Profile} />
+        <Route path={newArticle} component={CreateArticle} />
+        <Route path={articleSlugEdit} component={CreateArticle} />
       </Router>
     </div>
   );

@@ -4,10 +4,10 @@ import { Pagination, Spin } from 'antd';
 
 
 import { getArticleList } from '../../API/fetchAPI';
-import Card from '../Card/Card'
-import styles from './CardList.module.scss'
+import Article from '../Article/Article'
+import styles from './ArticleList.module.scss'
 
-function CardList() {
+function ArticleList() {
   const [articles, setArticles] = useState([]);
   const [error, setError] = useState(false);
   const [articlesCount, setArticlesCount] = useState();
@@ -42,7 +42,7 @@ function CardList() {
       {loaded}
       {showError}
       {articles.map((item) => {
-        return <Card key={item.slug} data={item} />;
+        return <Article key={item.slug} data={item} />;
       })}
       {articles.length !== 0 ? (
         <Pagination
@@ -58,4 +58,4 @@ function CardList() {
   );
 }
 
-export default (CardList);
+export default (ArticleList);

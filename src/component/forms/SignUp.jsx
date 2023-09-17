@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState , useEffect} from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { message } from 'antd';
 
-
+import { setLogged, setUser, setErrorState } from '../../store/action';
 import { signUp } from '../../API/loginAPI';
 
 import styles from '../App/App.module.scss';
@@ -24,6 +24,16 @@ export default function SignUp() {
 
     const onSubmit = (data) => {
       dispatch(signUp(data));
+      if (data.user) {
+        dispatch(setErrorState(''));
+      }
+      if (data.errors) {
+        const value = `${Object.entries(data.errors)
+          .map((err) => `${err[0].toString()}, `)
+          .join(' ')
+          .slice(0, -2)} is alredy taken`;
+          dispatch(setErrorState(value));
+      }
       if (errorState === '') {
         message.success('Account created succsessfully');
         history.push('/sign-in');
@@ -123,7 +133,7 @@ export default function SignUp() {
             />
             {'I agree to the processing of my personal information'}
           </label>
-          {errors?.check && <div className={styles.error}>{errors?.check?.message || 'Error'}</div>}
+          {errors?.agree && <div className={styles.error}>{errors?.check?.message || 'Provide consent to the processing of personal data'}</div>}
           <input type="submit" name="submit" id="submit" value="Create" />
         </form>
         <p>

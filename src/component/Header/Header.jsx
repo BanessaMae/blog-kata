@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useHistory } from 'react-router-dom';
+
 
 import { setlogOut } from '../../API/loginAPI';
 
@@ -12,6 +13,7 @@ export default function Header() {
     const image = user.image ? user.image : 'https://i.pinimg.com/736x/40/ce/e2/40cee25e2b1356a3918935347e6d76b6.jpg';
     const name = user ? user.username : 'none';
     const history = useHistory();
+
 
     const handleLogOut = () => {
       dispatch(setlogOut());

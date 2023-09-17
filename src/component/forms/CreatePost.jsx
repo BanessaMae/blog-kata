@@ -4,7 +4,7 @@ import ReactMarkdown from 'react-markdown';
 import { Spin } from 'antd';
 
 import { getArticle } from '../../API/fetchAPI';
-import Card from '../Card/Card';
+import Article from '../Article/Article';
 
 import styles from './CreatePost.module.scss';
 
@@ -34,7 +34,7 @@ export default function CreatePost() {
         {showError}
         {data ? (
             <>
-            <Card data={data} checkSlug={slug} showmore={true} />
+            <Article data={data} checkSlug={slug} showmore={true} />
             <ReactMarkdown skipHtml>{data.body}</ReactMarkdown>
             </>
         ) : null}

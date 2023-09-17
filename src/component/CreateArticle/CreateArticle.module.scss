@@ -1,5 +1,22 @@
 @import '../../vars.scss';
 
+.mask {
+  display: flex;
+  margin: auto;
+  width: 938px;
+  height: max-content;
+  background-color: #fff;
+  flex-direction: column;
+  justify-content: start;
+  align-items: center;
+  border-radius: 6px;
+  padding: 48px 32px;
+  box-shadow: 0px 0px 20px 0px rgba(34, 60, 80, 0.2);
+  font-family: 'Roboto', sans-serif;
+  font-size: 14px;
+  margin: 0 0;
+}
+
 .article {
   display: flex;
   margin: auto;

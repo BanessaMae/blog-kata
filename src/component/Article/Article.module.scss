@@ -1,6 +1,6 @@
 @import '../../vars.scss';
 
-.card {
+.article {
   height: 140px;
   width: 941px;
   position: relative;
@@ -69,7 +69,7 @@
   border-radius: 100%;
 }
 
-.card__more{
+.article__more{
   height: max-content;
   width: 941px;
   display: flex;

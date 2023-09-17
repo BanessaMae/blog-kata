@@ -1,9 +1,10 @@
-import React from 'react';
+import React , {useEffect}from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Link, useHistory } from 'react-router-dom';
 
 import { signIn } from '../../API/loginAPI';
+import { setLogged, setUser, setErrorState } from '../../store/action';
 
 import styles from '../App/App.module.scss';
 
@@ -18,12 +19,15 @@ export default function SignIn() {
     reset,
   } = useForm({mode: 'onBlur'});
 
+
+
   const onSubmit = (data) => {
-    dispatch(signIn(data.email, data.password));
+    dispatch(signIn(data.email, data.password))
+
     if (errorState === '') {
       history.push('/');
       reset();
-      console.log(data.email, data.password)
+      // console.log(data.email, data.password)
     }
   };
 

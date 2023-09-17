@@ -5,6 +5,7 @@ import { Link, useHistory } from 'react-router-dom';
 import { message } from 'antd';
 
 import { updateProfile } from '../../API/loginAPI';
+import { setLogged, setUser, setErrorState } from '../../store/action';
 import styles from '../App/App.module.scss';
 
 export default function Profile() {
@@ -37,6 +38,14 @@ export default function Profile() {
         const filteredKeys = Object.keys(data).filter((key) => data[key] !== '');
         const newData = filteredKeys.reduce((acc, key) => ({ ...acc, [key]: data[key] }), {});
         dispatch(updateProfile(newData));
+        if (data.user) {
+          dispatch(setUser(data.user));
+          dispatch(setErrorState(''));
+        }
+        if (data.errors) {
+          const value = Object.entries(data.errors).map(([key, value]) => `${key}: ${value}`);
+          dispatch(setErrorState(value));
+        }
     
         if (errorState === '') {
           message.success('Profile updated succsessfully');

@@ -5,8 +5,8 @@ import { useParams, useHistory } from 'react-router-dom';
 import { message } from 'antd';
 
 import { getArticle, editArticle, newArticle } from '../../API/fetchAPI';
-
-import styles from './CreateCard.module.scss';
+import { Spin } from 'antd';
+import styles from './CreateArticle.module.scss';
 
 let maxId = 1;
 export default function CreareCard() {
@@ -26,12 +26,15 @@ export default function CreareCard() {
   const [tag, setTag] = useState([]);
   const [inputState, setInputState] = useState('');
   const [error, setError] = useState(false);
+  const [loading, setLoading]  = useState(false);
 
   useEffect(() => {
     clearState();
     if (slug) {
-      getArticle(slug)
+      setLoading( true)
+      getArticle(slug )
         .then((element) => {
+          setLoading( false)
           setValue('title', element.article.title);
           setValue('description', element.article.description);
           setValue('body', element.article.body);
@@ -44,24 +47,31 @@ export default function CreareCard() {
         })
         .catch(() => setError(true));
     }
+    
   }, [slug]);
+ 
 
   const clearState = () => {
     reset();
     setTag([]);
   };
+ 
 
+  
   const onSubmit = (data) => {
     const { body, description, title, ...tags } = data;
     const allTags = Object.entries(tags).map((el) => el[1]);
     const tagList = allTags.filter((element) => element.trim() !== '');
     const newData = { body, description, title, tagList };
+    setLoading( false)
     if (!error) {
       if (!slug) {
+        setLoading( false)
         newArticle(newData)
           .then((data) => {
             history.push(`/articles/${data.article?.slug}`);
             setError(false);
+            setLoading( false)
             message.success('Article created succsessfully');
           })
           .catch(() => setError(true));
@@ -82,6 +92,10 @@ export default function CreareCard() {
     message.error('Only logged in users can create or change articles');
   }
 
+  if (loading){
+    return (<Spin className="spin" size="large" />)
+  }
+
   const addTag = () => {
     unregister('tags0');
     if (inputState.trim()) {
@@ -96,7 +110,10 @@ export default function CreareCard() {
   };
 
   return (
+    <>
+  
     <div className={styles.article}>
+    {/* {loading ? <Spin className="spin" size="large" /> : null} */}
       <h2>{slug ? 'Edit article' : 'Create new article'}</h2>
       <form className={styles.create_article} onSubmit={handleSubmit(onSubmit)} noValidate>
         <label htmlFor="title">{'Title'}</label>
@@ -165,9 +182,11 @@ export default function CreareCard() {
                 onChange: (e) => {
                   setInputState(e.target.value);
                 },
+                
               })}
             />
             <button
+              type="button"
               className={styles.btn_delete}
               onClick={() => {
                 setInputState('');
@@ -176,7 +195,7 @@ export default function CreareCard() {
             >
               Delete
             </button>
-            <button className={styles.btn_add} onClick={() => addTag()}>
+            <button className={styles.btn_add} type="button" onClick={() => addTag()}>
               Add
             </button>
           </div>
@@ -184,5 +203,6 @@ export default function CreareCard() {
         <input type="submit" name="submit" id="submit" value="Send" />
       </form>
     </div>
+    </>
   );
 }

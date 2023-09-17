@@ -1,3 +1,6 @@
+/* eslint-disable no-undef */
+import {signUp} from '../API/loginAPI'
+
 export const setLogged = (logged) => ({
     type: 'SET_LOGGED',
     payload: logged,
@@ -12,3 +15,6 @@ export const setLogged = (logged) => ({
     type: 'SET_ERROR',
     payload: error,
   });
+
+
+
