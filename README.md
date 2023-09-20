@@ -1,1 +1,1 @@
-https://blog-kata-fpcv.vercel.app/
+https://blog-kata-iota.vercel.app/
