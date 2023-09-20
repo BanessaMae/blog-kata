@@ -3,9 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Link, useHistory } from 'react-router-dom';
 import { message } from 'antd';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import { updateProfile } from '../../API/loginAPI';
+import { userUpdate } from '../../store/action';
 import { setLogged, setUser, setErrorState } from '../../store/action';
+import {profileSchema} from '../../YUP/yup';
+
 import styles from '../App/App.module.scss';
 
 export default function Profile() {
@@ -22,7 +26,7 @@ export default function Profile() {
       handleSubmit,
       formState:{errors},
       reset,
-    } = useForm({mode: 'onBlur'});
+    } = useForm({mode: 'onBlur',  resolver: yupResolver(profileSchema)});
 
     const handleChange = (e) => {
         const name = e.target.name;
@@ -37,7 +41,17 @@ export default function Profile() {
       const onSubmit = (data) => {
         const filteredKeys = Object.keys(data).filter((key) => data[key] !== '');
         const newData = filteredKeys.reduce((acc, key) => ({ ...acc, [key]: data[key] }), {});
-        dispatch(updateProfile(newData));
+        
+        const { username, email, password, image } = newData
+        const user = {
+          user: {
+            username: username,
+            email: email,
+            password: password,
+            image: image,
+          },
+        }
+        dispatch(userUpdate(user))
         if (data.user) {
           dispatch(setUser(data.user));
           dispatch(setErrorState(''));
@@ -68,17 +82,7 @@ export default function Profile() {
           placeholder="Username"
           defaultValue={box.username}
           onChange={handleChange}
-          {...register('username', {
-            required: 'This field is required',
-            minLength: {
-              value: 3,
-              message: 'Minimum 3 characters',
-            },
-            maxLength: {
-              value: 20,
-              message: 'Maximum 20 characters',
-            },
-          })}
+          {...register('username')}
         />
         {errors?.username && <div className={styles.error}>{errors?.username.message || 'Error'}</div>}
         <label htmlFor="email">Email address</label>
@@ -89,13 +93,7 @@ export default function Profile() {
           placeholder="Email address"
           defaultValue={box.email}
           onChange={handleChange}
-          {...register('email', {
-            required: 'This field is required',
-            pattern: {
-              value: /^([A-Za-z0-9_.-])+@([A-Za-z0-9_.-])+.([A-Za-z])$/,
-              message: 'Incorrect mail',
-            },
-          })}
+          {...register('email')}
         />
         {errors?.email && <div className={styles.error}>{errors?.email?.message || 'Error'}</div>}
         <label htmlFor="password">New password</label>
@@ -104,16 +102,7 @@ export default function Profile() {
           type="password"
           className={styles.input}
           placeholder="Password"
-          {...register('password', {
-            minLength: {
-              value: 6,
-              message: 'Minimum 6 characters',
-            },
-            maxLength: {
-              value: 40,
-              message: 'Maximum 40 characters',
-            },
-          })}
+          {...register('password')}
         />
         {errors?.password && <div className={styles.error}>{errors?.password?.message || 'Error'}</div>}
         <label htmlFor="image">Avatar image (url)</label>
@@ -122,13 +111,7 @@ export default function Profile() {
           type="text"
           className={styles.input}
           placeholder="Avatar image"
-          {...register('image', {
-            pattern: {
-              value:
-                /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[-;:&=+$,\w]+@)?[A-Za-z0-9.-]+|(?:www.|[-;:&=+$,\w]+@)[A-Za-z0-9.-]+)((?:\/[+~%/.\w-_]*)?\??(?:[-+=&;%@.\w_]*)#?(?:[\w]*))?)/,
-              message: 'Incorrect url',
-            },
-          })}
+          {...register('image')}
         />
         {errors?.image && <div className={styles.error}>{errors?.image?.message || 'Error'}</div>}
         <input type="submit" name="submit" id="submit" value="Save" />

@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Pagination, Spin } from 'antd';
 
 
-import { getArticleList } from '../../API/fetchAPI';
+import { getArticleList } from '../../API/articleAPI';
 import Article from '../Article/Article'
 import styles from './ArticleList.module.scss'
 

@@ -21,7 +21,7 @@ import {profile} from '../Route/Route';
 import {signIn} from '../Route/Route';
 
 
-import {getArticleList} from '../../API/fetchAPI'
+import {getArticleList} from '../../API/articleAPI'
 
 import styles from './App.module.scss';
 

@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { Spin } from 'antd';
 
-import { getArticle } from '../../API/fetchAPI';
+import { getArticle } from '../../API/articleAPI';
 import Article from '../Article/Article';
 
 import styles from './CreatePost.module.scss';

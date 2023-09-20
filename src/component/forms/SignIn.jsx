@@ -2,34 +2,48 @@ import React , {useEffect}from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useForm } from 'react-hook-form';
 import { Link, useHistory } from 'react-router-dom';
+import { Alert, Space } from 'antd';
+import { yupResolver } from '@hookform/resolvers/yup';
 
 import { signIn } from '../../API/loginAPI';
+import { loginUser } from '../../store/action';
 import { setLogged, setUser, setErrorState } from '../../store/action';
+import {signInSchema} from '../../YUP/yup';
 
 import styles from '../App/App.module.scss';
 
 export default function SignIn() {
 
   const dispatch = useDispatch();
-  const {errorState} = useSelector((state) => state.reduserLogin);
+  const {errorState, logged} = useSelector((state) => state.reduserLogin);
   const history = useHistory();
   const {
     register,
     handleSubmit,
     reset,
-  } = useForm({mode: 'onBlur'});
+    formState:{errors},
+  } = useForm({mode: 'onBlur',resolver: yupResolver(signInSchema)});
 
 
 
   const onSubmit = (data) => {
-    dispatch(signIn(data.email, data.password))
+    // dispatch(signIn(data.email, data.password))
+    const { email, password } = data
+    const user = {
+      user: {
+        email: email,
+        password: password,
+      },
+    }
+    dispatch(loginUser(user))
+  };
 
-    if (errorState === '') {
+  useEffect(() => {
+    if (logged) {
       history.push('/');
       reset();
-      // console.log(data.email, data.password)
     }
-  };
+  }, [logged])
 
     return (
         <div className={styles.block__form}>
@@ -41,33 +55,19 @@ export default function SignIn() {
               type="email"
               className={styles.input}
               placeholder="Email address"
-              {...register('email', {
-                required: 'This field is required',
-                pattern: {
-                value: /^([A-Za-z0-9_.-])+@([A-Za-z0-9_.-])+.([A-Za-z])$/,
-                message: 'Incorrect mail',
-              },
-            })}
- 
+              {...register('email')}
             />
+           {errors?.email && <div className={styles.error}>{errors?.email.message || 'Error'}</div>}
+
             <label htmlFor="password">Password</label>
             <input
               id="password"
               type="password"
               className={styles.input}
               placeholder="Password"
-              {...register('password', {
-                required: 'This field is required',
-                minLength: {
-                  value: 6,
-                  message: 'Minimum 6 characters',
-                },
-                maxLength: {
-                  value: 40,
-                  message: 'Maximum 40 characters',
-                },
-              })}
+              {...register('password')}
             />
+            {errors?.password && <div className={styles.error}>{errors?.password.message || 'Error'}</div>}
             <input type="submit" name="submit" id="submit" value="Login" />
           </form>
           <p>

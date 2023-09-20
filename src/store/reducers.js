@@ -1,4 +1,4 @@
-import {SET_LOGGED, SET_USER, SET_ERROR } from '../store/actionTypes'
+import {SET_LOGGED, SET_USER, SET_ERROR, SET_LOGGET_SUCCESS } from '../store/actionTypes'
 
 
 const initialState = {

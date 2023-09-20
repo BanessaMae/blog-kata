@@ -3,15 +3,19 @@ import { Link, useHistory } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useSelector, useDispatch } from 'react-redux';
 import { message } from 'antd';
+import { yupResolver } from '@hookform/resolvers/yup';
 
-import { setLogged, setUser, setErrorState } from '../../store/action';
 import { signUp } from '../../API/loginAPI';
+import { registerUser } from 'store/action';
+import {signUpSchema} from '../../YUP/yup';
 
 import styles from '../App/App.module.scss';
 
 export default function SignUp() {
     const dispatch = useDispatch();
-    const {errorState} = useSelector((state) => state.reduserLogin);
+    const reduserLogin = useSelector((state) => state.reduserLogin);
+    const { loading, errorState, user, server } = reduserLogin;
+    const { token } = user
     const [ckeckbox, setCheckbox] = useState(false);
     const history = useHistory();
     const {
@@ -19,27 +23,28 @@ export default function SignUp() {
       formState:{errors},
       handleSubmit,
       watch,
-    } = useForm({mode: 'onBlur',});
+    } = useForm({mode: 'onBlur',resolver: yupResolver(signUpSchema)});
 
-
-    const onSubmit = (data) => {
-      dispatch(signUp(data));
-      if (data.user) {
-        dispatch(setErrorState(''));
+  
+    const onSubmit = (dataUser) => {
+      // dispatch(signUp(data));
+      const { username, email, password } = dataUser
+      const user = {
+        user: {
+          username: username,
+          email: email,
+          password: password,
+        },
       }
-      if (data.errors) {
-        const value = `${Object.entries(data.errors)
-          .map((err) => `${err[0].toString()}, `)
-          .join(' ')
-          .slice(0, -2)} is alredy taken`;
-          dispatch(setErrorState(value));
-      }
-      if (errorState === '') {
-        message.success('Account created succsessfully');
-        history.push('/sign-in');
-         console.log(data);
-      }
+        dispatch(registerUser(user))
     };
+    useEffect(() => {
+     if (token) {
+      message.success('Account created succsessfully');
+      history.push('/sign-in');
+    }
+    }, [token])
+  
   
     return (
       <div className={styles.block__form}>

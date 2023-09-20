@@ -8,7 +8,7 @@ import { v4 as uuid } from 'uuid';
 
 import heartFalse from '../../assets/heartFalse.svg';
 import heartTrue from '../../assets/heartTrue.svg';
-import { postFavorited, delFavorited, deleteArticle } from '../../API/fetchAPI';
+import { postFavorited, delFavorited, deleteArticle } from '../../API/articleAPI';
 
 import styles from './Article.module.scss';
 
